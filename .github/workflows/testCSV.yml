@@ -27,8 +27,8 @@ jobs:
         uses: navarrothiago/dependabot-alert-export@main
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          org_name: 'octodemo'
-          repo_name: 'Fabrikam-Dependabot1'
+          org_name: navarrothiago
+          repo_name: dependabot-alert-export
           csv_path: data/vulnerability.csv
 
       - name: Upload Vulnerability report

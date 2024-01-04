@@ -1,4 +1,4 @@
-name: 'Dependabot Alert CSV Export'
+name: 'Dependabot Alert CSV Exporter'
 description: 'Export the Dependabot alerts to CSV with FilePath'
 branding:
   icon: 'download'
@@ -7,18 +7,18 @@ inputs:
   GITHUB_TOKEN:
     description: 'GitHub token'
     required: true
-  org_name: 
+  org_name:
     description: 'Organization name'
     required: true
   repo_name:
     description: 'Repository name'
-    required: true  
+    required: true
   csv_path:
     description: 'CSV File path'
     required: true
 outputs:
   alerts_count:
-    description: Number of vulnerability alerts    
+    description: Number of vulnerability alerts
 runs:
   using: 'node16'
   main: 'app/index.js'

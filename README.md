@@ -24,7 +24,7 @@ steps:
       - name: Dependabot Alert CSV Export
         uses: navarrothiago/dependabot-alert-export@v1.0.0
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
           org_name: 'ORG_NAME'
           repo_name: 'REPO_NAME'
           csv_path: data/vulnerability.csv
@@ -40,7 +40,7 @@ steps:
 
 | Name                           | Required  | Description                                                                      |
 |--------------------------------|------------|----------------------------------------------------------------------|
-| GITHUB_TOKEN                 | Yes | PAT Token for access    |
+| GH_TOKEN                 | Yes | PAT Token for access    |
 | org_name                       | Yes | GitHub Organization Name                                      |
 | repo_name                   | Yes | GitHub Repository Name     |
 | csv_path                       | Yes | CSV file path                                   |

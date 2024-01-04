@@ -171,6 +171,7 @@ async function run(org_Name, repo_Name, csv_path) {
     do {
       const alertResult = await getAlerts(org_Name, repo_Name, pagination);
       let vulnerabilityNodes = alertResult.repository.vulnerabilityAlerts.nodes;
+      console.log(vulnerabilityNodes);
 
       if (addTitleRow) {
         alertCount = alertResult.repository.vulnerabilityAlerts.totalCount;

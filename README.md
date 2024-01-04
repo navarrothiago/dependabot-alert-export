@@ -1,7 +1,7 @@
 # dependabot-alert-export
-Export the Dependabot alerts as CSV file from a repo with filepath 
+Export the Dependabot alerts as CSV file from a repo with filepath
 
-This GitHub action helps to export the Dependabot alerts to a CSV file. One can define a workflow to run or triger based on specific event to capture all Dependabot alerts to a CSV file for further analysis. 
+This GitHub action helps to export the Dependabot alerts to a CSV file. One can define a workflow to run or triger based on specific event to capture all Dependabot alerts to a CSV file for further analysis.
 
 
 ## Release
@@ -15,25 +15,25 @@ Create a PAT token to get access to the Dependabot alerts. Pass this token as an
 
 ## action in workflow
 
-Include the dependabot-alert-export action in your workflow. 
+Include the dependabot-alert-export action in your workflow.
 
 Following is the sample code for integrating this action with your workflow
 
 ```
-steps:               
+steps:
       - name: Dependabot Alert CSV Export
-        uses: ShamKarthikS-Hexaware/dependabot-alert-export@v1.0
-        with:        
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+        uses: navarrothiago/dependabot-alert-export@v1.0.0
+        with:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           org_name: 'ORG_NAME'
           repo_name: 'REPO_NAME'
           csv_path: data/vulnerability.csv
-          
+
       - name: Upload Vulnerability report
         uses: actions/upload-artifact@v3
         with:
            name: vulnerability_report
-           path: data/vulnerability.csv          
+           path: data/vulnerability.csv
 ```
 
 ## Parameters

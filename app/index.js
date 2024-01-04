@@ -134,10 +134,6 @@ const query =
     value: 'fixedAt'
   },
   {
-    label: 'Fix Reason',
-    value: 'fixReason'
-  },
-  {
     label: 'Manifest File Path',
     value: 'vulnerableManifestPath'
   },
@@ -150,62 +146,57 @@ const query =
 // graphql query execution
 async function getAlerts(org, repo, pagination) {
   try {
-    console.log(`getAlerts(): pagination: ${pagination ? pagination: null}` );
+    console.log(`getAlerts(): pagination: ${pagination ? pagination : null}`);
 
-    return await octokit.graphql(query, { org_name: `${org}`, repo_name: `${repo}`, pagination: (pagination ? `${pagination}` : null) });
+    return await octokit.graphql(query, {
+      org_name: org,
+      repo_name: repo,
+      pagination: pagination || null
+    });
   } catch (error) {
     core.setFailed(error.message);
+    throw error; // Rethrow to handle in the calling function
   }
 }
 
 // Extract vulnerability alerts with a pagination of 50 alerts per page
 async function run(org_Name, repo_Name, csv_path) {
-
   let pagination = null;
   let hasNextPage = false;
   let addTitleRow = true;
-  let alertCount =0 ;
+  let alertCount = 0;
 
   try {
     await makeDir(dirname(csv_path));
     do {
-      // invoke the graphql query execution
-      await getAlerts(org_Name, repo_Name, pagination).then(alertResult => {
-        let vulnerabilityNodes = alertResult.repository.vulnerabilityAlerts.nodes;
+      const alertResult = await getAlerts(org_Name, repo_Name, pagination);
+      let vulnerabilityNodes = alertResult.repository.vulnerabilityAlerts.nodes;
 
-        if(addTitleRow){
-          alertCount = alertResult.repository.vulnerabilityAlerts.totalCount;
-          console.log ('Alert Count ' + alertCount);
-        }
+      if (addTitleRow) {
+        alertCount = alertResult.repository.vulnerabilityAlerts.totalCount;
+        console.log('Alert Count ' + alertCount);
+      }
 
-        // ALERT! - create our updated opts
-        const opts = { fields, "header": addTitleRow };
+      const opts = { fields, header: addTitleRow };
 
-        // append to the existing file (or create and append if needed)
-        require("fs").writeFileSync(csv_path, `${parse(vulnerabilityNodes, opts)}\n`);
+      require("fs").appendFileSync(csv_path, `${parse(vulnerabilityNodes, opts)}\n`);
 
-        // pagination to get next page data
-        let pageInfo = alertResult.repository.vulnerabilityAlerts.pageInfo;
-        hasNextPage = pageInfo.hasNextPage;
-        if (hasNextPage) {
-          pagination = pageInfo.endCursor;
-          addTitleRow = false;
-        }
-        console.log(`run(): hasNextPage:  ${hasNextPage}`);
-        console.log(`run(): Pagination cursor: ${pagination}`);
-        console.log(`run(): addTitleRow: ${addTitleRow}`);
-
-      });
-
-       core.setOutput('alerts_count', alertCount)
-
+      let pageInfo = alertResult.repository.vulnerabilityAlerts.pageInfo;
+      hasNextPage = pageInfo.hasNextPage;
+      if (hasNextPage) {
+        pagination = pageInfo.endCursor;
+        addTitleRow = false;
+      }
+      console.log(`run(): hasNextPage: ${hasNextPage}`);
+      console.log(`run(): Pagination cursor: ${pagination}`);
+      console.log(`run(): addTitleRow: ${addTitleRow}`);
     } while (hasNextPage);
+
+    core.setOutput('alerts_count', alertCount);
   } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-console.log(`preamble: org name: ${org_Name}   repo name: ${repo_Name} csv_path: ${csv_path}` );
-
-// run the action code
+console.log(`preamble: org name: ${org_Name} repo name: ${repo_Name} csv_path: ${csv_path}`);
 run(org_Name, repo_Name, csv_path);

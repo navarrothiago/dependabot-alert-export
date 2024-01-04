@@ -26,7 +26,7 @@ jobs:
       - name: Export Dependabot alerts
         uses: navarrothiago/dependabot-alert-export@main
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
           org_name: navarrothiago
           repo_name: dependabot-alert-export
           csv_path: data/vulnerability.csv
